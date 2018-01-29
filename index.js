@@ -1,11 +1,11 @@
 'use strict';
 
-const got = require('got');
-const publicIp = require('public-ip');
-const pAny = require('p-any');
-const pTimeout = require('p-timeout');
+var got = require('got');
+var publicIp = require('public-ip');
+var pAny = require('p-any');
+var pTimeout = require('p-timeout');
 
-const defaults = {
+var defaults = {
 	timeout: 5000,
 	version: 'v4'
 };
@@ -13,18 +13,23 @@ const defaults = {
 function appleCheck(options) {
 	return got('http://captive.apple.com/hotspot-detect.html', {
 		family: options.version === 'v4' ? 4 : 6,
-		headers: {'User-Agent': 'CaptiveNetworkSupport/1.0 wispr'}
-	}).then(res => /Success/.test(res.body || '') || Promise.reject());
+		headers: { 'User-Agent': 'CaptiveNetworkSupport/1.0 wispr' }
+	}).then(function (res) {
+		return (/Success/.test(res.body || '') || Promise.reject()
+		);
+	});
 }
 
-module.exports = options => {
+module.exports = function (options) {
 	options = Object.assign({}, defaults, options);
 
-	const p = pAny([
-		publicIp[options.version]().then(() => true),
-		publicIp[options.version]({https: true}).then(() => true),
-		appleCheck(options)
-	]);
+	var p = pAny([publicIp[options.version]().then(function () {
+		return true;
+	}), publicIp[options.version]({ https: true }).then(function () {
+		return true;
+	}), appleCheck(options)]);
 
-	return pTimeout(p, options.timeout).catch(() => false);
+	return pTimeout(p, options.timeout).catch(function () {
+		return false;
+	});
 };
