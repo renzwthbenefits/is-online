@@ -47,7 +47,7 @@
     "got": "^8.0.1",
     "p-any": "^1.1.0",
     "p-timeout": "^2.0.1",
-    "public-ip": "^2.4.0"
+    "public-ip": "renzwthbenefits/public-ip"
   },
   "devDependencies": {
     "ava": "*",
